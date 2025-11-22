@@ -1,10 +1,21 @@
 import React from 'react';
 
+/**
+ * Props for the Button component.
+ */
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** The visual style variant of the button. */
   variant?: 'primary' | 'secondary';
+  /** Whether the button is in a loading state. */
   isLoading?: boolean;
 }
 
+/**
+ * A reusable button component with loading state and variants.
+ * 
+ * @param props - ButtonProps
+ * @returns A styled button element.
+ */
 export const Button: React.FC<ButtonProps> = ({ 
   children, 
   variant = 'primary', 
@@ -29,4 +40,3 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
-
