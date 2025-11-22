@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { MintResponse } from '@/types';
+import { useTranslation } from '@/hooks/useTranslation';
 
 /**
  * Custom hook to handle the NFT minting process.
@@ -11,6 +12,7 @@ import { MintResponse } from '@/types';
 export const useMint = (address?: string, onSuccess?: () => void) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const { t } = useTranslation();
 
   /**
    * Triggers the minting API call.
@@ -19,7 +21,7 @@ export const useMint = (address?: string, onSuccess?: () => void) => {
   const mintPass = useCallback(async () => {
     if (!address) return;
     setLoading(true);
-    setMessage('Minting...');
+    setMessage(t('common.minting'));
     try {
       const res = await fetch('/api/mint', {
         method: 'POST',
@@ -28,17 +30,17 @@ export const useMint = (address?: string, onSuccess?: () => void) => {
       });
       const data: MintResponse = await res.json();
       if (data.success) {
-        setMessage('Minted successfully! Checking access...');
+        setMessage(t('common.mintSuccess'));
         if (onSuccess) onSuccess();
       } else {
         setMessage(`Error: ${data.error}`);
       }
     } catch (error) {
-      setMessage('Minting failed');
+      setMessage(t('common.mintError'));
     } finally {
       setLoading(false);
     }
-  }, [address, onSuccess]);
+  }, [address, onSuccess, t]);
 
   return { mintPass, loading, message, setMessage };
 };
