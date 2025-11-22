@@ -8,6 +8,7 @@
     "mintPass": "Mint Access Pass",
     "loading": "Loading...",
     "minting": "Minting...",
-    "mintSuccess": "Minted successfully! Checking access..."
+    "mintSuccess": "Minted successfully! Checking access...",
+    "mintError": "Minting failed"
   }
 }
