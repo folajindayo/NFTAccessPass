@@ -1,4 +1,5 @@
 {
-  "common": {}
+  "common": {
+    "appName": "NFT Access Pass"
+  }
 }
-
