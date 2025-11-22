@@ -2,7 +2,10 @@ import { createPublicClient, createWalletClient, http, getContract } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts';
 import { hardhat } from 'viem/chains';
 
-// ABI for the NFTAccessPass contract
+/**
+ * ABI for the NFTAccessPass contract.
+ * Contains only necessary functions: mintNFT and balanceOf.
+ */
 export const CONTRACT_ABI = [
   {
     "inputs": [{"internalType": "address", "name": "recipient", "type": "address"}],
@@ -23,17 +26,29 @@ export const CONTRACT_ABI = [
 const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 const privateKey = process.env.PRIVATE_KEY as `0x${string}`;
 
+/**
+ * Public Viem client for reading from the blockchain.
+ */
 export const publicClient = createPublicClient({
   chain: hardhat,
   transport: http(process.env.RPC_URL)
 });
 
+/**
+ * Wallet Viem client for signing transactions on the server side.
+ * Uses the private key from environment variables.
+ */
 export const walletClient = createWalletClient({
   chain: hardhat,
   transport: http(process.env.RPC_URL),
   account: privateKeyToAccount(privateKey)
 });
 
+/**
+ * Gets the contract instance with both public and wallet clients.
+ * Allows both reading state and writing transactions.
+ * @returns The Viem contract instance.
+ */
 export const getContractInstance = () => {
   return getContract({
     address: contractAddress,
@@ -41,4 +56,3 @@ export const getContractInstance = () => {
     client: { public: publicClient, wallet: walletClient }
   });
 };
-
