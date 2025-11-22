@@ -10,17 +10,13 @@ describe('Card Component', () => {
 
   it('applies default variant classes', () => {
     render(<Card>Content</Card>);
-    // We check for a class that is specific to the default variant
-    // Note: This is a bit fragile if classes change, but good for now
-    // The container is the first child
-    const card = screen.getByText('Content').parentElement;
+    const card = screen.getByText('Content');
     expect(card).toHaveClass('bg-gray-800');
   });
 
   it('applies success variant classes', () => {
     render(<Card variant="success">Content</Card>);
-    const card = screen.getByText('Content').parentElement;
+    const card = screen.getByText('Content');
     expect(card).toHaveClass('bg-green-800');
   });
 });
-
