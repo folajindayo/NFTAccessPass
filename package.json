@@ -29,5 +29,6 @@
     "hardhat": "^3.0.15",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "type": "module"
 }
