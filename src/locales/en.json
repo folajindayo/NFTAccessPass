@@ -3,6 +3,7 @@
     "appName": "NFT Access Pass",
     "connectWallet": "Connect your wallet to check access.",
     "accessGranted": "Access Granted ✅",
-    "holdPass": "You hold the NFT Access Pass."
+    "holdPass": "You hold the NFT Access Pass.",
+    "noAccess": "No Access Pass Found"
   }
 }
