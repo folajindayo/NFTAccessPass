@@ -5,6 +5,7 @@
     "accessGranted": "Access Granted ✅",
     "holdPass": "You hold the NFT Access Pass.",
     "noAccess": "No Access Pass Found",
-    "mintPass": "Mint Access Pass"
+    "mintPass": "Mint Access Pass",
+    "loading": "Loading..."
   }
 }
