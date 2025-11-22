@@ -1,26 +1,37 @@
-import '@rainbow-me/rainbowkit/styles.css';
 import type { AppProps } from 'next/app';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { hardhat } from 'wagmi/chains';
-import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { createAppKit } from '@reown/appkit/react';
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 
-const config = getDefaultConfig({
-  appName: 'NFT Access Pass',
-  projectId: 'YOUR_PROJECT_ID', // Replace with valid ID for production
-  chains: [hardhat],
-  ssr: true,
+// 1. Get projectId
+const projectId = '1234567890abcdef1234567890abcdef'; // Replace with valid ID
+
+// 2. Create Wagmi Adapter
+const networks = [hardhat];
+const wagmiAdapter = new WagmiAdapter({
+  projectId,
+  networks
+});
+
+// 3. Create modal
+createAppKit({
+  adapters: [wagmiAdapter],
+  networks: [hardhat],
+  projectId,
+  features: {
+    analytics: true
+  }
 });
 
 const client = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={client}>
-        <RainbowKitProvider>
-          <Component {...pageProps} />
-        </RainbowKitProvider>
+        <Component {...pageProps} />
       </QueryClientProvider>
     </WagmiProvider>
   );
