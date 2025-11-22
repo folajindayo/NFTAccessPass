@@ -1,11 +1,23 @@
 import React from 'react';
 
+/**
+ * Props for the Card component.
+ */
 interface CardProps {
+  /** Content to display inside the card. */
   children: React.ReactNode;
+  /** Additional CSS classes. */
   className?: string;
+  /** Visual style variant of the card. */
   variant?: 'default' | 'success';
 }
 
+/**
+ * A container component for grouping content.
+ * 
+ * @param props - CardProps
+ * @returns A styled div element.
+ */
 export const Card: React.FC<CardProps> = ({ 
   children, 
   className = '',
@@ -23,4 +35,3 @@ export const Card: React.FC<CardProps> = ({
     </div>
   );
 };
-
