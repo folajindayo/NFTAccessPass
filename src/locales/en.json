@@ -1,6 +1,7 @@
 {
   "common": {
     "appName": "NFT Access Pass",
-    "connectWallet": "Connect your wallet to check access."
+    "connectWallet": "Connect your wallet to check access.",
+    "accessGranted": "Access Granted ✅"
   }
 }
