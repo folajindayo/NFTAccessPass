@@ -1,16 +1,18 @@
 import React from 'react';
-import { APP_NAME } from '@/constants';
+import { useTranslation } from '@/hooks/useTranslation';
+import { colors, spacing, typography } from '@/theme';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const { t } = useTranslation();
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gray-900 text-white">
-      <h1 className="text-4xl font-bold mb-8">{APP_NAME}</h1>
+    <main className={`flex min-h-screen flex-col items-center justify-center ${spacing.container} ${colors.background} ${colors.text.primary}`}>
+      <h1 className={`${typography.h1} ${spacing.margin.bottom}`}>{t('common.appName')}</h1>
       {children}
     </main>
   );
 };
-
