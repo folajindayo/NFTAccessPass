@@ -38,3 +38,10 @@ Committed autocommit.log
 [main 2649c5d] Update autocommit.log - 1763823578
  1 file changed, 3 insertions(+)
 Committed autocommit.log
+[main e28a9c8] Update autocommit.log - 1763823584
+ 1 file changed, 3 insertions(+)
+Committed autocommit.log
+[main e742157] Update contracts/ - 1763823584
+ 1 file changed, 24 insertions(+)
+ create mode 100644 contracts/NFTAccessPass.sol
+Committed contracts/
