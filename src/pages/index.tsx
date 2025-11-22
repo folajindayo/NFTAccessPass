@@ -2,6 +2,7 @@ import { useAccount } from 'wagmi';
 import { Layout } from '@/components/layout/Layout';
 import { AccessCard } from '@/components/AccessCard';
 import { WalletConnect } from '@/components/WalletConnect';
+import { Meta } from '@/components/seo/Meta';
 import { useMint } from '@/hooks/useMint';
 import { useAccess } from '@/hooks/useAccess';
 
@@ -12,6 +13,7 @@ export default function Home() {
 
   return (
     <Layout>
+      <Meta />
       <WalletConnect />
       <AccessCard
         isConnected={isConnected}
