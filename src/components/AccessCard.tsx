@@ -2,6 +2,8 @@ import React from 'react';
 import { Button } from './ui/Button';
 import { Card } from './ui/Card';
 import { AccessCardProps } from '@/types';
+import { useTranslation } from '@/hooks/useTranslation';
+import { colors, spacing, typography } from '@/theme';
 
 /**
  * Component to display the user's access status.
@@ -16,29 +18,31 @@ export const AccessCard = ({
   message, 
   onMint 
 }: AccessCardProps) => {
+  const { t } = useTranslation();
+
   if (!isConnected) {
-    return <p className="text-gray-400">Connect your wallet to check access.</p>;
+    return <p className={colors.text.muted}>{t('common.connectWallet')}</p>;
   }
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className={`flex flex-col items-center ${spacing.gap.small}`}>
       {hasAccess ? (
         <Card variant="success">
-          <h2 className="text-2xl font-bold">Access Granted ✅</h2>
-          <p>You hold the NFT Access Pass.</p>
+          <h2 className={typography.h2}>{t('common.accessGranted')}</h2>
+          <p>{t('common.holdPass')}</p>
         </Card>
       ) : (
         <Card>
-          <h2 className="text-xl">No Access Pass Found</h2>
+          <h2 className={typography.h3}>{t('common.noAccess')}</h2>
           <Button
             onClick={onMint}
             isLoading={loading}
           >
-            Mint Access Pass
+            {t('common.mintPass')}
           </Button>
         </Card>
       )}
-      {message && <p className="mt-4 text-sm text-gray-300">{message}</p>}
+      {message && <p className={`${spacing.margin.top} ${typography.small} ${colors.text.secondary}`}>{message}</p>}
     </div>
   );
 };
