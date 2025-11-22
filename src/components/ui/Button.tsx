@@ -1,4 +1,6 @@
 import React from 'react';
+import { colors, spacing, borders, typography } from '@/theme';
+import { useTranslation } from '@/hooks/useTranslation';
 
 /**
  * Props for the Button component.
@@ -24,10 +26,12 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props 
 }) => {
-  const baseStyles = "px-6 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50";
+  const { t } = useTranslation();
+  
+  const baseStyles = `${spacing.input} ${borders.radius.lg} ${typography.weight.semibold} transition-colors disabled:opacity-50`;
   const variants = {
-    primary: "bg-blue-600 hover:bg-blue-500 text-white",
-    secondary: "bg-gray-600 hover:bg-gray-500 text-white"
+    primary: colors.primary,
+    secondary: colors.secondary
   };
 
   return (
@@ -36,7 +40,7 @@ export const Button: React.FC<ButtonProps> = ({
       disabled={isLoading || disabled}
       {...props}
     >
-      {isLoading ? 'Loading...' : children}
+      {isLoading ? t('common.loading') : children}
     </button>
   );
 };
