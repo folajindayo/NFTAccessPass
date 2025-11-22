@@ -440,3 +440,101 @@ Committed autocommit.log
 [main d9fbd09] Update autocommit.log - 1763829922
  1 file changed, 3 insertions(+)
 Committed autocommit.log
+[main 2140c72] Update autocommit.log - 1763829927
+ 1 file changed, 3 insertions(+)
+Committed autocommit.log
+[main 2fe36df] Update artifacts/ - 1763829927
+ 35 files changed, 2199 insertions(+)
+ create mode 100644 artifacts/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/IERC1155Errors.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/IERC1155Errors.json
+ create mode 100644 artifacts/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/IERC20Errors.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/IERC20Errors.json
+ create mode 100644 artifacts/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/IERC721Errors.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/IERC721Errors.json
+ create mode 100644 artifacts/@openzeppelin/contracts/token/ERC721/ERC721.sol/ERC721.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/token/ERC721/ERC721.sol/ERC721.json
+ create mode 100644 artifacts/@openzeppelin/contracts/token/ERC721/IERC721.sol/IERC721.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/token/ERC721/IERC721.sol/IERC721.json
+ create mode 100644 artifacts/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol/IERC721Receiver.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol/IERC721Receiver.json
+ create mode 100644 artifacts/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol/IERC721Metadata.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol/IERC721Metadata.json
+ create mode 100644 artifacts/@openzeppelin/contracts/token/ERC721/utils/ERC721Utils.sol/ERC721Utils.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/token/ERC721/utils/ERC721Utils.sol/ERC721Utils.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/Context.sol/Context.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/Context.sol/Context.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/Panic.sol/Panic.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/Panic.sol/Panic.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/Strings.sol/Strings.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/Strings.sol/Strings.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/introspection/ERC165.sol/ERC165.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/introspection/ERC165.sol/ERC165.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/introspection/IERC165.sol/IERC165.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/introspection/IERC165.sol/IERC165.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/math/Math.sol/Math.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/math/Math.sol/Math.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/math/SafeCast.sol/SafeCast.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/math/SafeCast.sol/SafeCast.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/math/SignedMath.sol/SignedMath.dbg.json
+ create mode 100644 artifacts/@openzeppelin/contracts/utils/math/SignedMath.sol/SignedMath.json
+ create mode 100644 artifacts/build-info/633fba84ea2d0b3704ce30158ccedd8b.json
+ create mode 100644 artifacts/contracts/NFTAccessPass.sol/NFTAccessPass.dbg.json
+ create mode 100644 artifacts/contracts/NFTAccessPass.sol/NFTAccessPass.json
+Committed artifacts/
+[main 51ca010] Update cache/ - 1763829927
+ 1 file changed, 575 insertions(+)
+ create mode 100644 cache/solidity-files-cache.json
+Committed cache/
+[main 259bbdc] Update typechain-types/ - 1763829927
+ 50 files changed, 5213 insertions(+)
+ create mode 100644 typechain-types/@openzeppelin/contracts/index.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/IERC1155Errors.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/IERC20Errors.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/IERC721Errors.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/index.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/interfaces/index.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/token/ERC721/ERC721.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/token/ERC721/IERC721.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/token/ERC721/IERC721Receiver.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/token/ERC721/extensions/index.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/token/ERC721/index.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/token/index.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/utils/Strings.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/utils/index.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/utils/introspection/ERC165.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/utils/introspection/IERC165.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/utils/introspection/index.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/utils/math/SafeCast.ts
+ create mode 100644 typechain-types/@openzeppelin/contracts/utils/math/index.ts
+ create mode 100644 typechain-types/@openzeppelin/index.ts
+ create mode 100644 typechain-types/common.ts
+ create mode 100644 typechain-types/contracts/NFTAccessPass.ts
+ create mode 100644 typechain-types/contracts/index.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/index.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/IERC1155Errors__factory.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/IERC20Errors__factory.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/IERC721Errors__factory.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/interfaces/draft-IERC6093.sol/index.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/interfaces/index.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/token/ERC721/ERC721__factory.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/token/ERC721/IERC721Receiver__factory.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/token/ERC721/IERC721__factory.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata__factory.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/token/ERC721/extensions/index.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/token/ERC721/index.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/token/index.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/utils/Strings__factory.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/utils/index.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/utils/introspection/ERC165__factory.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/utils/introspection/IERC165__factory.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/utils/introspection/index.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/utils/math/SafeCast__factory.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/contracts/utils/math/index.ts
+ create mode 100644 typechain-types/factories/@openzeppelin/index.ts
+ create mode 100644 typechain-types/factories/contracts/NFTAccessPass__factory.ts
+ create mode 100644 typechain-types/factories/contracts/index.ts
+ create mode 100644 typechain-types/factories/index.ts
+ create mode 100644 typechain-types/hardhat.d.ts
+ create mode 100644 typechain-types/index.ts
+Committed typechain-types/
