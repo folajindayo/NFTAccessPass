@@ -1,10 +1,21 @@
 import { useState, useCallback } from 'react';
 import { MintResponse } from '@/types';
 
+/**
+ * Custom hook to handle the NFT minting process.
+ * 
+ * @param address - The wallet address to mint the NFT for.
+ * @param onSuccess - Optional callback function to run after successful minting.
+ * @returns Object containing the mint function, loading state, and status message.
+ */
 export const useMint = (address?: string, onSuccess?: () => void) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
+  /**
+   * Triggers the minting API call.
+   * Updates loading state and messages based on the outcome.
+   */
   const mintPass = useCallback(async () => {
     if (!address) return;
     setLoading(true);
@@ -31,4 +42,3 @@ export const useMint = (address?: string, onSuccess?: () => void) => {
 
   return { mintPass, loading, message, setMessage };
 };
-
