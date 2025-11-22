@@ -4,22 +4,18 @@ import { WagmiProvider } from 'wagmi';
 import { hardhat } from 'wagmi/chains';
 import { createAppKit } from '@reown/appkit/react';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
+import { PROJECT_ID } from '@/constants';
 
-// 1. Get projectId
-const projectId = '1234567890abcdef1234567890abcdef'; // Replace with valid ID
-
-// 2. Create Wagmi Adapter
 const networks = [hardhat];
 const wagmiAdapter = new WagmiAdapter({
-  projectId,
+  projectId: PROJECT_ID,
   networks
 });
 
-// 3. Create modal
 createAppKit({
   adapters: [wagmiAdapter],
   networks: [hardhat],
-  projectId,
+  projectId: PROJECT_ID,
   features: {
     analytics: true
   }
