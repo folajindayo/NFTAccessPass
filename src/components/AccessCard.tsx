@@ -3,6 +3,12 @@ import { Button } from './ui/Button';
 import { Card } from './ui/Card';
 import { AccessCardProps } from '@/types';
 
+/**
+ * Component to display the user's access status.
+ * Shows a success card if they have access, or a mint button if they don't.
+ * 
+ * @param props - AccessCardProps including connection status, access flag, and callbacks.
+ */
 export const AccessCard = ({ 
   isConnected, 
   hasAccess, 
