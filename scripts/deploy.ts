@@ -1,4 +1,5 @@
-import { ethers } from "hardhat";
+import hardhat from "hardhat";
+const { ethers } = hardhat;
 
 async function main() {
   const currentTimestampInSeconds = Math.round(Date.now() / 1000);
