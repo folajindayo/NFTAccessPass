@@ -1,4 +1,5 @@
 import React from 'react';
+import { colors, spacing, borders } from '@/theme';
 
 /**
  * Props for the Card component.
@@ -23,10 +24,10 @@ export const Card: React.FC<CardProps> = ({
   className = '',
   variant = 'default'
 }) => {
-  const baseStyles = "p-6 rounded-xl border flex flex-col items-center gap-4";
+  const baseStyles = `${spacing.card} ${borders.radius.xl} ${borders.width.default} flex flex-col items-center ${spacing.gap.small}`;
   const variants = {
-    default: "bg-gray-800 border-gray-700 text-white",
-    success: "bg-green-800 border-green-600 text-white"
+    default: `${colors.surface} ${colors.border.default} ${colors.text.primary}`,
+    success: `${colors.surfaceSuccess} ${colors.border.success} ${colors.text.primary}`
   };
 
   return (
