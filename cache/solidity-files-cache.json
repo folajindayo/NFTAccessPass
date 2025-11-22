@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/mac/NFTAcessPAss/contracts/NFTAccessPass.sol": {
-      "lastModificationDate": 1763829893904,
-      "contentHash": "56277c97abe3a10a92b830c7d09405f0",
+      "lastModificationDate": 1763830259171,
+      "contentHash": "9ffc9d24869996e892aef28777bdf82a",
       "sourceName": "contracts/NFTAccessPass.sol",
       "solcConfig": {
         "version": "0.8.27",

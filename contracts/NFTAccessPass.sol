@@ -17,4 +17,3 @@ contract NFTAccessPass is ERC721 {
         return tokenId;
     }
 }
-
