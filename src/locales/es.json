@@ -1,6 +1,7 @@
 {
   "common": {
     "appName": "Pase de Acceso NFT",
-    "connectWallet": "Conecta tu billetera para verificar el acceso."
+    "connectWallet": "Conecta tu billetera para verificar el acceso.",
+    "accessGranted": "Acceso Concedido ✅"
   }
 }
