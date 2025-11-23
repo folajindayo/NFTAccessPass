@@ -6,6 +6,7 @@
     "holdPass": "Tienes el Pase de Acceso NFT.",
     "noAccess": "No se encontró Pase de Acceso",
     "mintPass": "Acuñar Pase de Acceso",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "minting": "Acuñando..."
   }
 }
