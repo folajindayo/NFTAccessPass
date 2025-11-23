@@ -8,6 +8,7 @@
     "mintPass": "Acuñar Pase de Acceso",
     "loading": "Cargando...",
     "minting": "Acuñando...",
-    "mintSuccess": "¡Acuñado con éxito! Verificando acceso..."
+    "mintSuccess": "¡Acuñado con éxito! Verificando acceso...",
+    "mintError": "Error al acuñar"
   }
 }
