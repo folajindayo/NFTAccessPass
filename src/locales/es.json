@@ -3,6 +3,7 @@
     "appName": "Pase de Acceso NFT",
     "connectWallet": "Conecta tu billetera para verificar el acceso.",
     "accessGranted": "Acceso Concedido ✅",
-    "holdPass": "Tienes el Pase de Acceso NFT."
+    "holdPass": "Tienes el Pase de Acceso NFT.",
+    "noAccess": "No se encontró Pase de Acceso"
   }
 }
