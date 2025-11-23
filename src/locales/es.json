@@ -7,6 +7,7 @@
     "noAccess": "No se encontró Pase de Acceso",
     "mintPass": "Acuñar Pase de Acceso",
     "loading": "Cargando...",
-    "minting": "Acuñando..."
+    "minting": "Acuñando...",
+    "mintSuccess": "¡Acuñado con éxito! Verificando acceso..."
   }
 }
