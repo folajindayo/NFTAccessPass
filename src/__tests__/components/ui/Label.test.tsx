@@ -4,13 +4,12 @@ import { Label } from '@/components/ui/Label';
 
 describe('Label Component', () => {
   it('renders children correctly', () => {
-    render(<Label>Test Label</Label>);
-    expect(screen.getByText('Test Label')).toBeInTheDocument();
+    render(<Label>Username</Label>);
+    expect(screen.getByText('Username')).toBeInTheDocument();
   });
 
-  it('shows asterisk when required', () => {
-    render(<Label required>Required Label</Label>);
+  it('shows required asterisk', () => {
+    render(<Label required>Username</Label>);
     expect(screen.getByText('*')).toBeInTheDocument();
   });
 });
-
