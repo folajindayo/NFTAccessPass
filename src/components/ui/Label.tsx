@@ -4,22 +4,15 @@ import { colors, typography, spacing } from '@/theme';
 interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   children: React.ReactNode;
   className?: string;
-  required?: boolean;
 }
 
-export const Label: React.FC<LabelProps> = ({ 
-  children, 
-  className = '', 
-  required,
-  ...props 
-}) => {
+export const Label: React.FC<LabelProps> = ({ children, className = '', ...props }) => {
   return (
     <label 
-      className={`block ${typography.small} ${colors.text.secondary} ${spacing.margin.bottom} ${className}`} 
+      className={`${typography.small} ${typography.weight.semibold} ${colors.text.secondary} ${spacing.margin.bottom} block ${className}`} 
       {...props}
     >
       {children}
-      {required && <span className="text-red-500 ml-1">*</span>}
     </label>
   );
 };
