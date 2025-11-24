@@ -3,21 +3,21 @@ import { colors, spacing, borders, typography } from '@/theme';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
-  error?: boolean;
+  hasError?: boolean;
 }
 
 export const Input: React.FC<InputProps> = ({ 
   className = '', 
-  error = false,
+  hasError = false,
   ...props 
 }) => {
-  const baseStyles = `${spacing.input} ${borders.radius.lg} ${borders.width.default} w-full ${colors.background} ${colors.text.primary} focus:outline-none focus:ring-2`;
-  const borderClass = error ? 'border-red-500 focus:ring-red-500' : `${colors.border.default} focus:ring-blue-500`;
+  const baseStyles = `${spacing.input} ${borders.radius.lg} ${borders.width.default} bg-gray-800 text-white w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`;
+  const borderStyle = hasError ? 'border-red-500 focus:ring-red-500' : colors.border.default;
 
   return (
-    <input
-      className={`${baseStyles} ${borderClass} ${className}`}
-      {...props}
+    <input 
+      className={`${baseStyles} ${borderStyle} ${className}`} 
+      {...props} 
     />
   );
 };
