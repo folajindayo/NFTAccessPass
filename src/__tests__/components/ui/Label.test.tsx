@@ -4,8 +4,17 @@ import { Label } from '@/components/ui/Label';
 
 describe('Label Component', () => {
   it('renders children correctly', () => {
-    render(<Label htmlFor="test-input">Test Label</Label>);
-    expect(screen.getByText('Test Label')).toBeInTheDocument();
-    expect(screen.getByText('Test Label')).toHaveAttribute('for', 'test-input');
+    render(<Label>Username</Label>);
+    expect(screen.getByText('Username')).toBeInTheDocument();
+  });
+
+  it('associates with input via htmlFor', () => {
+    render(
+      <>
+        <Label htmlFor="username">Username</Label>
+        <input id="username" />
+      </>
+    );
+    expect(screen.getByLabelText('Username')).toBeInTheDocument();
   });
 });
