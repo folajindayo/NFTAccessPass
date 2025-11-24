@@ -6,3 +6,5 @@ export * from './Box';
 export * from './Flex';
 export * from './Grid';
 export * from './Divider';
+export * from './Input';
+export * from './Label';
