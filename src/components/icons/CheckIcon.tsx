@@ -1,7 +1,22 @@
 import React from 'react';
 
-export const CheckIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+interface IconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number;
+}
+
+export const CheckIcon: React.FC<IconProps> = ({ size = 24, className = '', ...props }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    className={className}
+    {...props}
+  >
+    <polyline points="20 6 9 17 4 12" />
   </svg>
 );
