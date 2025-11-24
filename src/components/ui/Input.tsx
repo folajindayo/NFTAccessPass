@@ -6,19 +6,18 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className = '', error, ...props }, ref) => {
-    const baseStyles = `${spacing.input} ${borders.radius.lg} ${borders.width.default} w-full bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500`;
-    const borderStyle = error ? 'border-red-500' : colors.border.default;
+export const Input: React.FC<InputProps> = ({ 
+  className = '', 
+  error = false,
+  ...props 
+}) => {
+  const baseStyles = `${spacing.input} ${borders.radius.lg} ${borders.width.default} w-full ${colors.background} ${colors.text.primary} focus:outline-none focus:ring-2`;
+  const borderClass = error ? 'border-red-500 focus:ring-red-500' : `${colors.border.default} focus:ring-blue-500`;
 
-    return (
-      <input
-        ref={ref}
-        className={`${baseStyles} ${borderStyle} ${className}`}
-        {...props}
-      />
-    );
-  }
-);
-
-Input.displayName = 'Input';
+  return (
+    <input
+      className={`${baseStyles} ${borderClass} ${className}`}
+      {...props}
+    />
+  );
+};
