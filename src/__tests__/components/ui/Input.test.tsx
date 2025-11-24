@@ -1,21 +1,24 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Input } from '@/components/ui/Input';
 
 describe('Input Component', () => {
   it('renders correctly', () => {
-    render(<Input placeholder="Test placeholder" />);
-    expect(screen.getByPlaceholderText('Test placeholder')).toBeInTheDocument();
+    render(<Input placeholder="Enter text" />);
+    expect(screen.getByPlaceholderText('Enter text')).toBeInTheDocument();
   });
 
-  it('renders label when provided', () => {
-    render(<Input label="Test Label" />);
-    expect(screen.getByText('Test Label')).toBeInTheDocument();
+  it('handles change events', () => {
+    const handleChange = jest.fn();
+    render(<Input onChange={handleChange} />);
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'test' } });
+    expect(handleChange).toHaveBeenCalled();
   });
 
-  it('renders error message when provided', () => {
-    render(<Input error="Invalid input" />);
-    expect(screen.getByText('Invalid input')).toBeInTheDocument();
+  it('applies error styles', () => {
+    render(<Input error />);
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveClass('border-red-500');
   });
 });
-
