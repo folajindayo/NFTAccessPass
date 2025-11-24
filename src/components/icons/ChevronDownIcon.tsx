@@ -1,8 +1,22 @@
 import React from 'react';
 
-export const ChevronDownIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+interface IconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number;
+}
+
+export const ChevronDownIcon: React.FC<IconProps> = ({ size = 24, className = '', ...props }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    className={className}
+    {...props}
+  >
+    <polyline points="6 9 12 15 18 9" />
   </svg>
 );
-
