@@ -5,11 +5,19 @@ import { WalletConnect } from '@/components/WalletConnect';
 import { Meta } from '@/components/seo/Meta';
 import { useMint } from '@/hooks/useMint';
 import { useAccess } from '@/hooks/useAccess';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const { address, isConnected } = useAccount();
+  const [mounted, setMounted] = useState(false);
   const { hasAccess, checkAccess } = useAccess(address);
   const { mintPass, loading, message } = useMint(address, checkAccess);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <Layout>
@@ -25,3 +33,4 @@ export default function Home() {
     </Layout>
   );
 }
+
