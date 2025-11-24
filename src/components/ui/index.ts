@@ -8,3 +8,5 @@ export * from './Grid';
 export * from './Divider';
 export * from './Input';
 export * from './Label';
+export * from './Input';
+export * from './Label';
