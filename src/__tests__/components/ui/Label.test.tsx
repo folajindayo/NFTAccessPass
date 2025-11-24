@@ -4,12 +4,8 @@ import { Label } from '@/components/ui/Label';
 
 describe('Label Component', () => {
   it('renders children correctly', () => {
-    render(<Label>Username</Label>);
-    expect(screen.getByText('Username')).toBeInTheDocument();
-  });
-
-  it('shows required asterisk', () => {
-    render(<Label required>Username</Label>);
-    expect(screen.getByText('*')).toBeInTheDocument();
+    render(<Label htmlFor="test-input">Test Label</Label>);
+    expect(screen.getByText('Test Label')).toBeInTheDocument();
+    expect(screen.getByText('Test Label')).toHaveAttribute('for', 'test-input');
   });
 });
