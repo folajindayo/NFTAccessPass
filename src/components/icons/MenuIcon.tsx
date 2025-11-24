@@ -4,7 +4,7 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
   size?: number;
 }
 
-export const MenuIcon: React.FC<IconProps> = ({ size = 24, ...props }) => (
+export const MenuIcon: React.FC<IconProps> = ({ size = 24, className = '', ...props }) => (
   <svg 
     width={size} 
     height={size} 
@@ -13,7 +13,8 @@ export const MenuIcon: React.FC<IconProps> = ({ size = 24, ...props }) => (
     stroke="currentColor" 
     strokeWidth="2" 
     strokeLinecap="round" 
-    strokeLinejoin="round" 
+    strokeLinejoin="round"
+    className={className}
     {...props}
   >
     <line x1="3" y1="12" x2="21" y2="12" />
