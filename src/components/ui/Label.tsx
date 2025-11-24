@@ -1,15 +1,20 @@
 import React from 'react';
-import { colors, typography, spacing } from '@/theme';
+import { typography, colors } from '@/theme';
 
 interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   children: React.ReactNode;
   className?: string;
+  htmlFor?: string;
 }
 
-export const Label: React.FC<LabelProps> = ({ children, className = '', ...props }) => {
+export const Label: React.FC<LabelProps> = ({ 
+  children, 
+  className = '', 
+  ...props 
+}) => {
   return (
     <label 
-      className={`${typography.small} ${typography.weight.semibold} ${colors.text.secondary} ${spacing.margin.bottom} block ${className}`} 
+      className={`${typography.small} ${colors.text.secondary} font-medium mb-1 block ${className}`} 
       {...props}
     >
       {children}
