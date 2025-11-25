@@ -1,6 +1,7 @@
 import React from 'react';
-import { useTranslation } from '@/hooks/useTranslation';
+
 import { colors, spacing, typography } from '@/theme';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface LayoutProps {
   children: React.ReactNode;
