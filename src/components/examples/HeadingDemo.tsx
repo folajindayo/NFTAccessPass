@@ -1,6 +1,7 @@
 import React from 'react';
-import { Heading } from '@/components/ui/Heading';
+
 import { Card } from '@/components/ui/Card';
+import { Heading } from '@/components/ui/Heading';
 import { typography, spacing } from '@/theme';
 
 export const HeadingDemo = () => {
