@@ -1,8 +1,8 @@
-import { Layout } from '@/components/layout/Layout';
 import { ButtonDemo } from '@/components/examples/ButtonDemo';
 import { CardDemo } from '@/components/examples/CardDemo';
-import { LayoutDemo } from '@/components/examples/LayoutDemo';
 import { FormDemo } from '@/components/examples/FormDemo';
+import { Layout } from '@/components/layout/Layout';
+import { LayoutDemo } from '@/components/examples/LayoutDemo';
 import { spacing, typography } from '@/theme';
 
 export default function DesignSystem() {
