@@ -1,10 +1,11 @@
 import React from 'react';
+
 import { Box } from '@/components/ui/Box';
-import { Text } from '@/components/ui/Text';
-import { Heading } from '@/components/ui/Heading';
 import { Divider } from '@/components/ui/Divider';
 import { Flex } from '@/components/ui/Flex';
 import { Grid } from '@/components/ui/Grid';
+import { Heading } from '@/components/ui/Heading';
+import { Text } from '@/components/ui/Text';
 import { spacing, typography } from '@/theme';
 
 export const LayoutDemo = () => {
