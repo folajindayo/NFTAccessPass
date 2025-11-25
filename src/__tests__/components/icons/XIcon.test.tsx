@@ -1,6 +1,7 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+
 import { XIcon } from '@/components/icons/XIcon';
+import { render } from '@testing-library/react';
 
 describe('XIcon', () => {
   it('renders correctly', () => {
