@@ -1,11 +1,12 @@
-import { useAccount } from 'wagmi';
-import { Layout } from '@/components/layout/Layout';
-import { AccessCard } from '@/components/AccessCard';
-import { WalletConnect } from '@/components/WalletConnect';
-import { Meta } from '@/components/seo/Meta';
-import { useMint } from '@/hooks/useMint';
-import { useAccess } from '@/hooks/useAccess';
 import { useEffect, useState } from 'react';
+
+import { AccessCard } from '@/components/AccessCard';
+import { Layout } from '@/components/layout/Layout';
+import { Meta } from '@/components/seo/Meta';
+import { WalletConnect } from '@/components/WalletConnect';
+import { useAccess } from '@/hooks/useAccess';
+import { useAccount } from 'wagmi';
+import { useMint } from '@/hooks/useMint';
 
 export default function Home() {
   const { address, isConnected } = useAccount();
