@@ -1,10 +1,11 @@
 import type { AppProps } from 'next/app';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiProvider } from 'wagmi';
-import { hardhat } from 'wagmi/chains';
-import { createAppKit } from '@reown/appkit/react';
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
+
 import { PROJECT_ID } from '@/constants';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
+import { WagmiProvider } from 'wagmi';
+import { createAppKit } from '@reown/appkit/react';
+import { hardhat } from 'wagmi/chains';
 
 const networks = [hardhat];
 const wagmiAdapter = new WagmiAdapter({
