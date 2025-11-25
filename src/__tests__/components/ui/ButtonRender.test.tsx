@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+
 import { Button } from '@/components/ui/Button';
+import { render, screen } from '@testing-library/react';
 
 describe('Button Component Render', () => {
   it('renders children correctly', () => {
