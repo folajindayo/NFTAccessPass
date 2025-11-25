@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+
 import { Button } from '@/components/ui/Button';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 describe('Button Component Events', () => {
   it('handles onClick events', () => {
