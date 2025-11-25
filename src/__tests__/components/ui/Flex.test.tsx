@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+
 import { Flex } from '@/components/ui/Flex';
+import { render, screen } from '@testing-library/react';
 
 describe('Flex Component', () => {
   it('renders children correctly', () => {
