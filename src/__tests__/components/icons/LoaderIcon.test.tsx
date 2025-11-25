@@ -1,6 +1,7 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+
 import { LoaderIcon } from '@/components/icons/LoaderIcon';
+import { render } from '@testing-library/react';
 
 describe('LoaderIcon', () => {
   it('renders correctly', () => {
