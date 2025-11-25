@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { typography, colors } from '@/theme';
 
 interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
