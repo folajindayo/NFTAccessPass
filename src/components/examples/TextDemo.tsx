@@ -1,6 +1,7 @@
 import React from 'react';
-import { Text } from '@/components/ui/Text';
+
 import { Card } from '@/components/ui/Card';
+import { Text } from '@/components/ui/Text';
 import { typography, spacing } from '@/theme';
 
 export const TextDemo = () => {
