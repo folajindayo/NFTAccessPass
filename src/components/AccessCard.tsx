@@ -1,9 +1,11 @@
 import React from 'react';
+
+import { AccessCardProps } from '@/types';
+import { colors, spacing, typography } from '@/theme';
+import { useTranslation } from '@/hooks/useTranslation';
+
 import { Button } from './ui/Button';
 import { Card } from './ui/Card';
-import { AccessCardProps } from '@/types';
-import { useTranslation } from '@/hooks/useTranslation';
-import { colors, spacing, typography } from '@/theme';
 
 /**
  * Component to display the user's access status.
