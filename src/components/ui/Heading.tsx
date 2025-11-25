@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { colors, typography } from '@/theme';
 
 interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
