@@ -1,9 +1,10 @@
 import React from 'react';
+
 import { Box } from '@/components/ui/Box';
-import { Input } from '@/components/ui/Input';
-import { Label } from '@/components/ui/Label';
 import { Button } from '@/components/ui/Button';
 import { Heading } from '@/components/ui/Heading';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
 import { spacing } from '@/theme';
 
 export const FormDemo = () => {
