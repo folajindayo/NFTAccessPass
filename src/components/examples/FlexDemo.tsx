@@ -1,7 +1,8 @@
 import React from 'react';
-import { Flex } from '@/components/ui/Flex';
+
 import { Box } from '@/components/ui/Box';
 import { Card } from '@/components/ui/Card';
+import { Flex } from '@/components/ui/Flex';
 import { typography, spacing } from '@/theme';
 
 export const FlexDemo = () => {
