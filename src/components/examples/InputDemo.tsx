@@ -1,6 +1,7 @@
 import React from 'react';
-import { Input } from '@/components/ui/Input';
+
 import { Card } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
 import { typography, spacing } from '@/theme';
 
 export const InputDemo = () => {
