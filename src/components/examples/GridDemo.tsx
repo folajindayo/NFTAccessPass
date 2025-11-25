@@ -1,7 +1,8 @@
 import React from 'react';
-import { Grid } from '@/components/ui/Grid';
+
 import { Box } from '@/components/ui/Box';
 import { Card } from '@/components/ui/Card';
+import { Grid } from '@/components/ui/Grid';
 import { typography, spacing } from '@/theme';
 
 export const GridDemo = () => {
