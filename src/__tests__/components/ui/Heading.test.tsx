@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+
 import { Heading } from '@/components/ui/Heading';
+import { render, screen } from '@testing-library/react';
 
 describe('Heading Component', () => {
   it('renders h1 by default', () => {
