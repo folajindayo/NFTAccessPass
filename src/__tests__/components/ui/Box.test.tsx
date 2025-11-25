@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+
 import { Box } from '@/components/ui/Box';
+import { render, screen } from '@testing-library/react';
 
 describe('Box Component', () => {
   it('renders children correctly', () => {
