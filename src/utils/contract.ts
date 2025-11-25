@@ -1,6 +1,6 @@
 import { createPublicClient, createWalletClient, http, getContract } from 'viem';
-import { privateKeyToAccount } from 'viem/accounts';
 import { hardhat } from 'viem/chains';
+import { privateKeyToAccount } from 'viem/accounts';
 
 /**
  * ABI for the NFTAccessPass contract.
