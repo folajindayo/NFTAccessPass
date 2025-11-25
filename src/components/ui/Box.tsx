@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { spacing, borders, colors } from '@/theme';
 
 interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
