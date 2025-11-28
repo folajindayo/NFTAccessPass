@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getContractInstance, publicClient, CONTRACT_ABI } from '../../utils/contract';
+import { getContractInstance, publicClient, CONTRACT_ABI } from '@/services/contract.service';
 
 export default async function handler(
   req: NextApiRequest,
