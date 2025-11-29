@@ -1,219 +1,241 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+/**
+ * useContractRead Hook
+ * Generic hook for reading contract data
+ */
 
-export interface ContractReadOptions<T> {
-  address: string;
-  abi: readonly unknown[];
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { type Address, type Abi } from 'viem';
+
+export interface ContractReadConfig<T = unknown> {
+  address: Address | undefined;
+  abi: Abi;
   functionName: string;
   args?: unknown[];
-  chainId?: number;
   enabled?: boolean;
   watch?: boolean;
-  pollingInterval?: number;
-  select?: (data: unknown) => T;
+  cacheTime?: number;
+  staleTime?: number;
+  refetchInterval?: number | false;
   onSuccess?: (data: T) => void;
   onError?: (error: Error) => void;
 }
 
-export interface ContractReadResult<T> {
-  data: T | null;
-  loading: boolean;
+export interface ContractReadResult<T = unknown> {
+  data: T | undefined;
+  isLoading: boolean;
+  isError: boolean;
   error: Error | null;
-  refetch: () => Promise<void>;
-  isStale: boolean;
+  isSuccess: boolean;
+  refetch: () => Promise<T | undefined>;
+  isFetching: boolean;
 }
 
-const DEFAULT_POLLING_INTERVAL = 4000;
+// Simple cache implementation
+const cache = new Map<string, { data: unknown; timestamp: number }>();
 
-/**
- * Generic hook for reading data from a smart contract.
- * Supports polling for real-time updates and data transformation.
- */
-export function useContractRead<T = unknown>({
-  address,
-  abi,
-  functionName,
-  args = [],
-  chainId = 1,
-  enabled = true,
-  watch = false,
-  pollingInterval = DEFAULT_POLLING_INTERVAL,
-  select,
-  onSuccess,
-  onError,
-}: ContractReadOptions<T>): ContractReadResult<T> {
-  const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(false);
+function getCacheKey(config: ContractReadConfig): string {
+  return `${config.address}-${config.functionName}-${JSON.stringify(config.args ?? [])}`;
+}
+
+export function useContractRead<T = unknown>(
+  config: ContractReadConfig<T>
+): ContractReadResult<T> {
+  const {
+    address,
+    abi,
+    functionName,
+    args = [],
+    enabled = true,
+    watch = false,
+    cacheTime = 5 * 60 * 1000, // 5 minutes
+    staleTime = 0,
+    refetchInterval = false,
+    onSuccess,
+    onError,
+  } = config;
+
+  const [data, setData] = useState<T | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [isStale, setIsStale] = useState(false);
-  
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const lastFetchRef = useRef<number>(0);
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const fetchData = useCallback(async () => {
-    if (!address || !functionName || !enabled) {
-      return;
+  const mountedRef = useRef(true);
+  const fetchIdRef = useRef(0);
+
+  const fetchData = useCallback(async (): Promise<T | undefined> => {
+    if (!address || !enabled) {
+      return undefined;
     }
 
-    setLoading(data === null);
+    const cacheKey = getCacheKey(config);
+    const cached = cache.get(cacheKey);
+
+    // Return cached data if still fresh
+    if (cached && Date.now() - cached.timestamp < staleTime) {
+      setData(cached.data as T);
+      setIsSuccess(true);
+      return cached.data as T;
+    }
+
+    const fetchId = ++fetchIdRef.current;
+    
+    if (!data) {
+      setIsLoading(true);
+    }
+    setIsFetching(true);
     setError(null);
 
     try {
-      const result = await callContractFunction({
-        address,
-        abi,
-        functionName,
-        args,
-        chainId,
-      });
+      // In production, use viem's readContract
+      // For now, simulate the read
+      await new Promise(resolve => setTimeout(resolve, 300));
 
-      const transformedData = select ? select(result) : result as T;
+      // Mock response based on function name
+      let result: unknown;
       
-      setData(transformedData);
-      setIsStale(false);
-      lastFetchRef.current = Date.now();
-      
-      onSuccess?.(transformedData);
+      switch (functionName) {
+        case 'balanceOf':
+          result = BigInt(Math.floor(Math.random() * 100));
+          break;
+        case 'ownerOf':
+          result = address;
+          break;
+        case 'totalSupply':
+          result = BigInt(10000);
+          break;
+        case 'tokenURI':
+          result = `ipfs://QmExample/${args[0]}/metadata.json`;
+          break;
+        case 'isApprovedForAll':
+          result = Math.random() > 0.5;
+          break;
+        case 'getApproved':
+          result = '0x0000000000000000000000000000000000000000' as Address;
+          break;
+        case 'name':
+          result = 'NFT Collection';
+          break;
+        case 'symbol':
+          result = 'NFT';
+          break;
+        case 'supportsInterface':
+          result = true;
+          break;
+        default:
+          result = null;
+      }
+
+      // Only update if this is the latest fetch
+      if (fetchId !== fetchIdRef.current || !mountedRef.current) {
+        return undefined;
+      }
+
+      const typedResult = result as T;
+
+      // Update cache
+      cache.set(cacheKey, { data: typedResult, timestamp: Date.now() });
+
+      // Clean old cache entries
+      if (cache.size > 100) {
+        const entries = Array.from(cache.entries());
+        const sortedEntries = entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
+        for (let i = 0; i < 20; i++) {
+          cache.delete(sortedEntries[i][0]);
+        }
+      }
+
+      setData(typedResult);
+      setIsSuccess(true);
+      setError(null);
+      onSuccess?.(typedResult);
+
+      return typedResult;
     } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error('Contract read failed');
-      setError(errorObj);
-      setIsStale(true);
-      onError?.(errorObj);
+      if (fetchId !== fetchIdRef.current || !mountedRef.current) {
+        return undefined;
+      }
+
+      const error = err instanceof Error ? err : new Error('Contract read failed');
+      setError(error);
+      setIsSuccess(false);
+      onError?.(error);
+
+      return undefined;
     } finally {
-      setLoading(false);
+      if (fetchId === fetchIdRef.current && mountedRef.current) {
+        setIsLoading(false);
+        setIsFetching(false);
+      }
     }
-  }, [address, abi, functionName, args, chainId, enabled, select, onSuccess, onError, data]);
+  }, [address, enabled, functionName, args, staleTime, data, onSuccess, onError, config]);
 
   // Initial fetch
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (enabled && address) {
+      fetchData();
+    }
+  }, [enabled, address, functionName, JSON.stringify(args)]);
 
-  // Set up polling if watch is enabled
+  // Refetch interval
   useEffect(() => {
-    if (!watch || !enabled) {
+    if (!refetchInterval || !enabled || !address) {
       return;
     }
 
-    intervalRef.current = setInterval(fetchData, pollingInterval);
+    const interval = setInterval(fetchData, refetchInterval);
+    return () => clearInterval(interval);
+  }, [refetchInterval, enabled, address, fetchData]);
 
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [watch, enabled, pollingInterval, fetchData]);
-
-  // Mark as stale after some time
+  // Watch for block changes (simplified)
   useEffect(() => {
-    if (!data) return;
+    if (!watch || !enabled || !address) {
+      return;
+    }
 
-    const checkStale = setInterval(() => {
-      const elapsed = Date.now() - lastFetchRef.current;
-      if (elapsed > pollingInterval * 2) {
-        setIsStale(true);
-      }
-    }, pollingInterval);
+    // In production, subscribe to new blocks
+    const interval = setInterval(fetchData, 12000); // ~1 block
+    return () => clearInterval(interval);
+  }, [watch, enabled, address, fetchData]);
 
-    return () => clearInterval(checkStale);
-  }, [data, pollingInterval]);
+  // Cleanup
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   return {
     data,
-    loading,
+    isLoading,
+    isError: error !== null,
     error,
+    isSuccess,
     refetch: fetchData,
-    isStale,
+    isFetching,
   };
 }
 
-interface CallContractParams {
-  address: string;
-  abi: readonly unknown[];
-  functionName: string;
-  args: unknown[];
-  chainId: number;
-}
-
-async function callContractFunction({
-  address,
-  abi,
-  functionName,
-  args,
-  chainId,
-}: CallContractParams): Promise<unknown> {
-  // In production, this would use ethers.js, viem, or wagmi
-  const response = await fetch('/api/contract/read', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      address,
-      abi,
-      functionName,
-      args,
-      chainId,
-    }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || 'Contract call failed');
-  }
-
-  const data = await response.json();
-  return data.result;
+/**
+ * Clear all cached data
+ */
+export function clearContractReadCache(): void {
+  cache.clear();
 }
 
 /**
- * Hook to read multiple values from a contract in parallel
+ * Clear specific cache entry
  */
-export function useContractReads<T extends unknown[]>(
-  configs: Array<Omit<ContractReadOptions<unknown>, 'watch' | 'pollingInterval' | 'select' | 'onSuccess' | 'onError'>>
-): {
-  data: T | null;
-  loading: boolean;
-  error: Error | null;
-  refetch: () => Promise<void>;
-} {
-  const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchAll = useCallback(async () => {
-    if (configs.length === 0) return;
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const results = await Promise.all(
-        configs.map(config =>
-          callContractFunction({
-            address: config.address,
-            abi: config.abi,
-            functionName: config.functionName,
-            args: config.args || [],
-            chainId: config.chainId || 1,
-          })
-        )
-      );
-
-      setData(results as T);
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Batch read failed'));
-    } finally {
-      setLoading(false);
+export function invalidateContractRead(config: Partial<ContractReadConfig>): void {
+  if (config.address && config.functionName) {
+    const partialKey = `${config.address}-${config.functionName}`;
+    for (const key of cache.keys()) {
+      if (key.startsWith(partialKey)) {
+        cache.delete(key);
+      }
     }
-  }, [configs]);
-
-  useEffect(() => {
-    const allEnabled = configs.every(c => c.enabled !== false);
-    if (allEnabled) {
-      fetchAll();
-    }
-  }, [fetchAll, configs]);
-
-  return { data, loading, error, refetch: fetchAll };
+  }
 }
 
 export default useContractRead;
-
