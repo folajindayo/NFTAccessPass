@@ -1,13 +1,23 @@
-import React from 'react';
+/**
+ * AccessTier Component
+ * Display NFT access tier badge with levels
+ */
 
-export type TierLevel = 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond';
+import React, { useMemo } from 'react';
+
+export type TierLevel = 'none' | 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond';
 
 export interface AccessTierProps {
   tier: TierLevel;
-  tokenCount?: number;
-  nextTierAt?: number;
-  showProgress?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  showLabel?: boolean;
+  showBenefits?: boolean;
+  benefits?: string[];
+  tokenCount?: number;
+  nextTier?: {
+    level: TierLevel;
+    requiredTokens: number;
+  };
   className?: string;
 }
 
@@ -16,175 +26,202 @@ interface TierConfig {
   color: string;
   bgColor: string;
   borderColor: string;
-  icon: string;
-  glowColor: string;
+  icon: React.ReactNode;
+  gradient: string;
 }
 
-const tierConfigs: Record<TierLevel, TierConfig> = {
-  bronze: {
-    label: 'Bronze',
-    color: 'text-amber-700 dark:text-amber-500',
-    bgColor: 'bg-amber-100 dark:bg-amber-900/30',
-    borderColor: 'border-amber-300 dark:border-amber-700',
-    icon: '🥉',
-    glowColor: 'shadow-amber-500/20',
-  },
-  silver: {
-    label: 'Silver',
-    color: 'text-gray-600 dark:text-gray-300',
-    bgColor: 'bg-gray-100 dark:bg-gray-800/50',
-    borderColor: 'border-gray-300 dark:border-gray-600',
-    icon: '🥈',
-    glowColor: 'shadow-gray-500/20',
-  },
-  gold: {
-    label: 'Gold',
-    color: 'text-yellow-600 dark:text-yellow-400',
-    bgColor: 'bg-yellow-50 dark:bg-yellow-900/30',
-    borderColor: 'border-yellow-400 dark:border-yellow-600',
-    icon: '🥇',
-    glowColor: 'shadow-yellow-500/30',
-  },
-  platinum: {
-    label: 'Platinum',
-    color: 'text-cyan-600 dark:text-cyan-400',
-    bgColor: 'bg-cyan-50 dark:bg-cyan-900/30',
-    borderColor: 'border-cyan-400 dark:border-cyan-600',
-    icon: '💎',
-    glowColor: 'shadow-cyan-500/30',
-  },
-  diamond: {
-    label: 'Diamond',
-    color: 'text-purple-600 dark:text-purple-400',
-    bgColor: 'bg-purple-50 dark:bg-purple-900/30',
-    borderColor: 'border-purple-400 dark:border-purple-600',
-    icon: '👑',
-    glowColor: 'shadow-purple-500/40',
-  },
-};
-
-const tierOrder: TierLevel[] = ['bronze', 'silver', 'gold', 'platinum', 'diamond'];
-
-const sizeClasses = {
-  sm: {
-    badge: 'px-2 py-1 text-xs',
-    icon: 'text-sm',
-    progress: 'h-1',
-  },
-  md: {
-    badge: 'px-3 py-1.5 text-sm',
-    icon: 'text-base',
-    progress: 'h-1.5',
-  },
-  lg: {
-    badge: 'px-4 py-2 text-base',
-    icon: 'text-lg',
-    progress: 'h-2',
-  },
-};
-
-/**
- * AccessTier displays the user's current access tier level with optional progress to next tier.
- * Supports multiple tier levels with distinct visual styling.
- */
 export const AccessTier: React.FC<AccessTierProps> = ({
   tier,
-  tokenCount = 0,
-  nextTierAt,
-  showProgress = false,
   size = 'md',
+  showLabel = true,
+  showBenefits = false,
+  benefits = [],
+  tokenCount,
+  nextTier,
   className = '',
 }) => {
-  const config = tierConfigs[tier];
-  const sizes = sizeClasses[size];
-  
-  const currentTierIndex = tierOrder.indexOf(tier);
-  const isMaxTier = currentTierIndex === tierOrder.length - 1;
-  
-  const progressPercent = nextTierAt && !isMaxTier
-    ? Math.min((tokenCount / nextTierAt) * 100, 100)
-    : 100;
+  const tierConfigs: Record<TierLevel, TierConfig> = useMemo(() => ({
+    none: {
+      label: 'No Access',
+      color: 'text-gray-500',
+      bgColor: 'bg-gray-100 dark:bg-gray-800',
+      borderColor: 'border-gray-300 dark:border-gray-600',
+      gradient: 'from-gray-400 to-gray-500',
+      icon: (
+        <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+        </svg>
+      ),
+    },
+    bronze: {
+      label: 'Bronze',
+      color: 'text-amber-700',
+      bgColor: 'bg-amber-100 dark:bg-amber-900/30',
+      borderColor: 'border-amber-400',
+      gradient: 'from-amber-600 to-amber-800',
+      icon: (
+        <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+      ),
+    },
+    silver: {
+      label: 'Silver',
+      color: 'text-slate-600',
+      bgColor: 'bg-slate-100 dark:bg-slate-800',
+      borderColor: 'border-slate-400',
+      gradient: 'from-slate-400 to-slate-600',
+      icon: (
+        <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+      ),
+    },
+    gold: {
+      label: 'Gold',
+      color: 'text-yellow-600',
+      bgColor: 'bg-yellow-100 dark:bg-yellow-900/30',
+      borderColor: 'border-yellow-500',
+      gradient: 'from-yellow-400 to-yellow-600',
+      icon: (
+        <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+      ),
+    },
+    platinum: {
+      label: 'Platinum',
+      color: 'text-cyan-600',
+      bgColor: 'bg-cyan-100 dark:bg-cyan-900/30',
+      borderColor: 'border-cyan-400',
+      gradient: 'from-cyan-400 to-cyan-600',
+      icon: (
+        <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+      ),
+    },
+    diamond: {
+      label: 'Diamond',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-100 dark:bg-purple-900/30',
+      borderColor: 'border-purple-400',
+      gradient: 'from-purple-400 via-pink-500 to-purple-600',
+      icon: (
+        <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+        </svg>
+      ),
+    },
+  }), []);
 
-  const getNextTierName = (): string | null => {
-    if (isMaxTier) return null;
-    return tierConfigs[tierOrder[currentTierIndex + 1]].label;
+  const config = tierConfigs[tier];
+
+  const sizeClasses = {
+    sm: {
+      badge: 'px-2 py-1',
+      icon: 'w-4 h-4',
+      text: 'text-xs',
+    },
+    md: {
+      badge: 'px-3 py-1.5',
+      icon: 'w-5 h-5',
+      text: 'text-sm',
+    },
+    lg: {
+      badge: 'px-4 py-2',
+      icon: 'w-6 h-6',
+      text: 'text-base',
+    },
   };
 
-  return (
-    <div className={`inline-flex flex-col ${className}`}>
+  const sizes = sizeClasses[size];
+
+  if (!showBenefits) {
+    // Simple badge mode
+    return (
       <div
-        className={`inline-flex items-center gap-1.5 rounded-full border ${config.bgColor} ${config.borderColor} ${sizes.badge} shadow-lg ${config.glowColor}`}
+        className={`inline-flex items-center gap-2 ${sizes.badge} ${config.bgColor} border ${config.borderColor} rounded-full ${className}`}
       >
-        <span className={sizes.icon}>{config.icon}</span>
-        <span className={`font-semibold ${config.color}`}>
-          {config.label}
-        </span>
-        {tokenCount > 0 && (
-          <span className={`${config.color} opacity-70`}>
-            ({tokenCount})
+        <div className={`${sizes.icon} ${config.color}`}>
+          {config.icon}
+        </div>
+        {showLabel && (
+          <span className={`font-medium ${sizes.text} ${config.color}`}>
+            {config.label}
           </span>
         )}
       </div>
+    );
+  }
 
-      {showProgress && !isMaxTier && nextTierAt && (
-        <div className="mt-2 w-full">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              Progress to {getNextTierName()}
-            </span>
-            <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
-              {tokenCount}/{nextTierAt}
-            </span>
+  // Card mode with benefits
+  return (
+    <div className={`rounded-2xl overflow-hidden shadow-lg ${className}`}>
+      {/* Header with gradient */}
+      <div className={`bg-gradient-to-r ${config.gradient} p-6 text-white`}>
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 text-white">
+              {config.icon}
+            </div>
           </div>
-          <div className={`w-full bg-gray-200 dark:bg-gray-700 rounded-full ${sizes.progress}`}>
-            <div
-              className={`${sizes.progress} rounded-full transition-all duration-500 bg-gradient-to-r ${
-                tier === 'bronze' ? 'from-amber-500 to-gray-400' :
-                tier === 'silver' ? 'from-gray-400 to-yellow-500' :
-                tier === 'gold' ? 'from-yellow-500 to-cyan-500' :
-                'from-cyan-500 to-purple-500'
-              }`}
-              style={{ width: `${progressPercent}%` }}
-            />
+          <div>
+            <h3 className="text-2xl font-bold">{config.label}</h3>
+            {tokenCount !== undefined && (
+              <p className="text-white/80">
+                {tokenCount} {tokenCount === 1 ? 'NFT' : 'NFTs'} owned
+              </p>
+            )}
           </div>
         </div>
-      )}
+      </div>
 
-      {showProgress && isMaxTier && (
-        <div className="mt-2 text-center">
-          <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">
-            Maximum tier reached! ✨
-          </span>
-        </div>
-      )}
+      {/* Benefits */}
+      <div className="p-6 bg-white dark:bg-slate-900">
+        {benefits.length > 0 && (
+          <div className="mb-4">
+            <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
+              Your Benefits
+            </h4>
+            <ul className="space-y-2">
+              {benefits.map((benefit, idx) => (
+                <li key={idx} className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <svg className={`w-5 h-5 ${config.color}`} fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  {benefit}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Progress to next tier */}
+        {nextTier && tokenCount !== undefined && (
+          <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-gray-500 dark:text-gray-400">
+                Progress to {tierConfigs[nextTier.level].label}
+              </span>
+              <span className="font-medium text-gray-900 dark:text-white">
+                {tokenCount}/{nextTier.requiredTokens}
+              </span>
+            </div>
+            <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div
+                className={`h-full bg-gradient-to-r ${tierConfigs[nextTier.level].gradient} transition-all duration-500`}
+                style={{ width: `${Math.min((tokenCount / nextTier.requiredTokens) * 100, 100)}%` }}
+              />
+            </div>
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              {nextTier.requiredTokens - tokenCount} more NFT{nextTier.requiredTokens - tokenCount !== 1 ? 's' : ''} needed
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-/**
- * Helper function to determine tier based on token count
- */
-export const getTierFromCount = (count: number): TierLevel => {
-  if (count >= 50) return 'diamond';
-  if (count >= 25) return 'platinum';
-  if (count >= 10) return 'gold';
-  if (count >= 5) return 'silver';
-  return 'bronze';
-};
-
-/**
- * Helper function to get the next tier threshold
- */
-export const getNextTierThreshold = (currentTier: TierLevel): number | null => {
-  const thresholds: Record<TierLevel, number | null> = {
-    bronze: 5,
-    silver: 10,
-    gold: 25,
-    platinum: 50,
-    diamond: null,
-  };
-  return thresholds[currentTier];
-};
-
-export default AccessTier;
-
+export default React.memo(AccessTier);
