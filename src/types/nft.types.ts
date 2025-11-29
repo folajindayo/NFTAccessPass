@@ -1,55 +1,52 @@
 /**
- * NFT-related type definitions
+ * NFT Types
+ * Type definitions for NFT operations
  */
 
-import type { Address, Hash } from 'viem';
+import { type Address, type Hex } from 'viem';
 
 /**
- * NFT token standards
+ * NFT standard
  */
 export type NFTStandard = 'ERC721' | 'ERC1155';
-
-/**
- * NFT metadata attribute
- */
-export interface NFTAttribute {
-  trait_type: string;
-  value: string | number | boolean;
-  display_type?: 'number' | 'boost_number' | 'boost_percentage' | 'date' | 'string';
-  max_value?: number;
-}
-
-/**
- * NFT metadata (OpenSea standard)
- */
-export interface NFTMetadata {
-  name: string;
-  description?: string;
-  image?: string;
-  image_data?: string;
-  external_url?: string;
-  animation_url?: string;
-  background_color?: string;
-  attributes?: NFTAttribute[];
-  properties?: Record<string, unknown>;
-  // Additional fields
-  created_by?: string;
-  token_id?: string;
-  contract_address?: string;
-}
 
 /**
  * NFT token
  */
 export interface NFTToken {
+  tokenId: bigint;
   contractAddress: Address;
-  tokenId: string;
-  tokenStandard: NFTStandard;
+  standard: NFTStandard;
   owner: Address;
-  balance: bigint;
+  balance?: bigint; // For ERC1155
   metadata?: NFTMetadata;
-  tokenUri?: string;
-  lastTransferTimestamp?: number;
+  tokenURI?: string;
+  createdAt?: Date;
+  lastTransferAt?: Date;
+}
+
+/**
+ * NFT metadata
+ */
+export interface NFTMetadata {
+  name: string;
+  description?: string;
+  image?: string;
+  animationUrl?: string;
+  externalUrl?: string;
+  backgroundColor?: string;
+  attributes?: NFTAttribute[];
+  properties?: Record<string, unknown>;
+}
+
+/**
+ * NFT attribute
+ */
+export interface NFTAttribute {
+  traitType: string;
+  value: string | number;
+  displayType?: 'number' | 'boost_number' | 'boost_percentage' | 'date';
+  maxValue?: number;
 }
 
 /**
@@ -59,59 +56,39 @@ export interface NFTCollection {
   address: Address;
   name: string;
   symbol: string;
-  tokenStandard: NFTStandard;
+  standard: NFTStandard;
   totalSupply?: bigint;
+  maxSupply?: bigint;
   owner?: Address;
-  contractUri?: string;
-  imageUrl?: string;
-  bannerUrl?: string;
-  description?: string;
-  externalUrl?: string;
-  verified?: boolean;
-  floorPrice?: {
-    value: bigint;
-    currency: string;
-  };
+  baseURI?: string;
+  contractURI?: string;
+  royaltyInfo?: RoyaltyInfo;
+  floorPrice?: bigint;
+  volume?: bigint;
 }
 
 /**
- * NFT transfer event
+ * Royalty info
+ */
+export interface RoyaltyInfo {
+  receiver: Address;
+  feeNumerator: number;
+  feeDenominator: number;
+}
+
+/**
+ * NFT transfer
  */
 export interface NFTTransfer {
-  transactionHash: Hash;
-  blockNumber: number;
-  timestamp: number;
+  id: string;
+  tokenId: bigint;
+  contractAddress: Address;
   from: Address;
   to: Address;
-  tokenId: string;
-  contractAddress: Address;
-  value?: bigint; // For ERC1155
-  logIndex: number;
-}
-
-/**
- * NFT mint event
- */
-export interface NFTMint {
-  transactionHash: Hash;
-  blockNumber: number;
-  timestamp: number;
-  to: Address;
-  tokenId: string;
-  contractAddress: Address;
-  value?: bigint;
-  mintPrice?: bigint;
-}
-
-/**
- * NFT ownership check result
- */
-export interface NFTOwnershipResult {
-  isOwner: boolean;
-  balance: bigint;
-  tokenIds: string[];
-  contractAddress: Address;
-  checkedAt: number;
+  amount?: bigint; // For ERC1155
+  transactionHash: Hex;
+  blockNumber: bigint;
+  timestamp: Date;
 }
 
 /**
@@ -119,116 +96,180 @@ export interface NFTOwnershipResult {
  */
 export interface NFTApproval {
   contractAddress: Address;
+  tokenId?: bigint;
   owner: Address;
   approved: Address;
-  tokenId?: string;
   isApprovedForAll: boolean;
+  transactionHash: Hex;
+  blockNumber: bigint;
 }
 
 /**
- * Access pass NFT specific
+ * Mint parameters
  */
-export interface AccessPassNFT extends NFTToken {
-  tier?: AccessTier;
-  expiresAt?: number;
-  isValid: boolean;
-  features: string[];
+export interface MintParams {
+  recipient: Address;
+  tokenId?: bigint;
+  amount?: bigint;
+  tokenURI?: string;
+  data?: Hex;
+}
+
+/**
+ * Mint result
+ */
+export interface MintResult {
+  success: boolean;
+  tokenId: bigint;
+  transactionHash: Hex;
+  blockNumber: bigint;
+  gasUsed: bigint;
+  error?: string;
+}
+
+/**
+ * Burn parameters
+ */
+export interface BurnParams {
+  tokenId: bigint;
+  amount?: bigint; // For ERC1155
+}
+
+/**
+ * NFT listing (marketplace)
+ */
+export interface NFTListing {
+  id: string;
+  tokenId: bigint;
+  contractAddress: Address;
+  seller: Address;
+  price: bigint;
+  currency: Address;
+  startTime: Date;
+  endTime?: Date;
+  isActive: boolean;
+}
+
+/**
+ * NFT offer (marketplace)
+ */
+export interface NFTOffer {
+  id: string;
+  tokenId: bigint;
+  contractAddress: Address;
+  buyer: Address;
+  amount: bigint;
+  currency: Address;
+  expiresAt: Date;
+  status: 'active' | 'accepted' | 'rejected' | 'expired' | 'cancelled';
 }
 
 /**
  * Access tier
  */
-export type AccessTier = 'basic' | 'standard' | 'premium' | 'vip';
-
-/**
- * Access tier config
- */
-export interface AccessTierConfig {
-  tier: AccessTier;
-  name: string;
-  description: string;
-  color: string;
-  features: string[];
-  price?: bigint;
-  maxSupply?: number;
-}
-
-/**
- * Token gating rule
- */
-export interface TokenGatingRule {
+export interface AccessTier {
   id: string;
-  contractAddress: Address;
-  tokenStandard: NFTStandard;
-  minBalance: bigint;
-  tokenIds?: string[];
-  attributes?: Array<{
-    trait_type: string;
-    value: string | number;
-  }>;
-  requireAll: boolean;
+  name: string;
+  requiredTokens: number;
+  benefits: string[];
+  color: string;
+  icon?: string;
 }
 
 /**
- * Token gating result
+ * Access check result
  */
-export interface TokenGatingResult {
+export interface AccessCheckResult {
   hasAccess: boolean;
-  rules: Array<{
-    rule: TokenGatingRule;
-    passed: boolean;
-    balance: bigint;
-  }>;
-  checkedAt: number;
+  tier?: AccessTier;
+  tokenCount: number;
+  tokens: NFTToken[];
+  missingTokens?: number;
 }
 
 /**
- * NFT listing
+ * Token gate config
  */
-export interface NFTListing {
+export interface TokenGateConfig {
   contractAddress: Address;
-  tokenId: string;
-  seller: Address;
-  price: bigint;
-  currency: Address;
-  startTime: number;
-  endTime?: number;
-  marketplace: string;
+  standard: NFTStandard;
+  minTokens: number;
+  requiredTokenIds?: bigint[];
+  requiredAttributes?: RequiredAttribute[];
+  tiers: AccessTier[];
 }
 
 /**
- * NFT royalty info
+ * Required attribute
  */
-export interface NFTRoyaltyInfo {
-  receiver: Address;
-  royaltyAmount: bigint;
-  feeDenominator: bigint;
-  percentBps: number;
+export interface RequiredAttribute {
+  traitType: string;
+  values: (string | number)[];
+  operator: 'equals' | 'contains' | 'gt' | 'lt' | 'gte' | 'lte';
 }
 
 /**
- * NFT filter options
+ * NFT activity
  */
-export interface NFTFilterOptions {
-  contractAddresses?: Address[];
-  tokenIds?: string[];
-  ownerAddress?: Address;
-  tokenStandard?: NFTStandard;
-  includeMetadata?: boolean;
-  limit?: number;
-  offset?: number;
-  sortBy?: 'tokenId' | 'transferTime' | 'name';
-  sortOrder?: 'asc' | 'desc';
+export interface NFTActivity {
+  id: string;
+  type: NFTActivityType;
+  tokenId: bigint;
+  contractAddress: Address;
+  from?: Address;
+  to?: Address;
+  price?: bigint;
+  currency?: Address;
+  transactionHash: Hex;
+  blockNumber: bigint;
+  timestamp: Date;
 }
 
 /**
- * Paginated NFT result
+ * NFT activity type
  */
-export interface PaginatedNFTResult {
-  items: NFTToken[];
-  total: number;
-  page: number;
-  pageSize: number;
-  hasMore: boolean;
+export type NFTActivityType =
+  | 'mint'
+  | 'transfer'
+  | 'burn'
+  | 'sale'
+  | 'list'
+  | 'delist'
+  | 'offer'
+  | 'offer_accepted'
+  | 'approval';
+
+/**
+ * NFT filter
+ */
+export interface NFTFilter {
+  contractAddress?: Address;
+  owner?: Address;
+  tokenIds?: bigint[];
+  attributes?: { traitType: string; values: string[] }[];
+  minPrice?: bigint;
+  maxPrice?: bigint;
+  isListed?: boolean;
 }
 
+/**
+ * NFT sort
+ */
+export interface NFTSort {
+  field: 'tokenId' | 'price' | 'lastTransfer' | 'rarity';
+  order: 'asc' | 'desc';
+}
+
+/**
+ * NFT statistics
+ */
+export interface NFTStatistics {
+  totalSupply: number;
+  totalOwners: number;
+  floorPrice: bigint;
+  volume24h: bigint;
+  volumeTotal: bigint;
+  averagePrice: bigint;
+  listedCount: number;
+  salesCount: number;
+}
