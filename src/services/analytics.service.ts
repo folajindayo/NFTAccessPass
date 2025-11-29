@@ -1,279 +1,300 @@
 /**
- * Analytics Service for tracking user events and metrics
- * Supports multiple analytics providers and custom event tracking
+ * Analytics Service
+ * Track and analyze NFT access events
  */
 
-export type EventCategory = 
-  | 'wallet'
-  | 'nft'
-  | 'transaction'
-  | 'navigation'
-  | 'error'
-  | 'engagement';
-
 export interface AnalyticsEvent {
-  category: EventCategory;
-  action: string;
-  label?: string;
-  value?: number;
-  properties?: Record<string, unknown>;
-}
-
-export interface UserProperties {
+  id: string;
+  type: AnalyticsEventType;
+  timestamp: Date;
+  userId?: string;
   walletAddress?: string;
-  chainId?: number;
-  hasNFT?: boolean;
-  accessTier?: string;
-  sessionCount?: number;
+  properties: Record<string, unknown>;
+  sessionId?: string;
+  platform?: string;
+  version?: string;
 }
 
-export interface PageView {
-  path: string;
-  title?: string;
-  referrer?: string;
+export type AnalyticsEventType =
+  | 'page_view'
+  | 'wallet_connect'
+  | 'wallet_disconnect'
+  | 'nft_mint_started'
+  | 'nft_mint_completed'
+  | 'nft_mint_failed'
+  | 'access_granted'
+  | 'access_denied'
+  | 'token_transfer'
+  | 'error';
+
+export interface AnalyticsMetrics {
+  totalUsers: number;
+  activeUsers24h: number;
+  totalMints: number;
+  mintSuccessRate: number;
+  accessGranted: number;
+  accessDenied: number;
+  averageSessionDuration: number;
 }
 
-export interface AnalyticsConfig {
-  enabled: boolean;
-  debug: boolean;
-  providers: {
-    google?: { measurementId: string };
-    mixpanel?: { token: string };
-    amplitude?: { apiKey: string };
-    custom?: { endpoint: string };
-  };
+export interface EventFilter {
+  type?: AnalyticsEventType | AnalyticsEventType[];
+  startDate?: Date;
+  endDate?: Date;
+  walletAddress?: string;
+  limit?: number;
 }
 
 class AnalyticsService {
-  private config: AnalyticsConfig;
-  private userId: string | null = null;
-  private sessionId: string;
-  private eventQueue: AnalyticsEvent[] = [];
-  private isInitialized = false;
+  private events: AnalyticsEvent[] = [];
+  private sessions: Map<string, { startTime: Date; lastActivity: Date }> = new Map();
+  private isEnabled: boolean = true;
 
-  constructor(config: Partial<AnalyticsConfig> = {}) {
-    this.config = {
-      enabled: true,
-      debug: false,
-      providers: {},
-      ...config,
-    };
-    this.sessionId = this.generateSessionId();
-  }
-
-  private generateSessionId(): string {
-    return `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  private log(message: string, data?: unknown): void {
-    if (this.config.debug) {
-      console.log(`[Analytics] ${message}`, data || '');
-    }
-  }
-
-  /**
-   * Initialize analytics providers
-   */
-  async initialize(): Promise<void> {
-    if (this.isInitialized || !this.config.enabled) return;
-
-    try {
-      // Initialize Google Analytics
-      if (this.config.providers.google) {
-        await this.initializeGA(this.config.providers.google.measurementId);
-      }
-
-      this.isInitialized = true;
-      this.log('Analytics initialized');
-
-      // Flush queued events
-      this.flushQueue();
-    } catch (error) {
-      this.log('Failed to initialize analytics', error);
-    }
-  }
-
-  private async initializeGA(measurementId: string): Promise<void> {
-    if (typeof window === 'undefined') return;
-
-    // GA4 initialization would go here
-    this.log('GA4 initialized', { measurementId });
-  }
-
-  /**
-   * Set user identity
-   */
-  identify(userId: string, properties?: UserProperties): void {
-    this.userId = userId;
-    this.log('User identified', { userId, properties });
-
-    if (!this.config.enabled) return;
-
-    // Send to providers
-    this.sendToProviders('identify', { userId, properties });
-  }
-
-  /**
-   * Track an event
-   */
-  track(event: AnalyticsEvent): void {
-    const enrichedEvent = {
-      ...event,
-      timestamp: Date.now(),
-      sessionId: this.sessionId,
-      userId: this.userId,
-    };
-
-    this.log('Track event', enrichedEvent);
-
-    if (!this.config.enabled) return;
-
-    if (!this.isInitialized) {
-      this.eventQueue.push(event);
-      return;
-    }
-
-    this.sendToProviders('track', enrichedEvent);
-  }
-
-  /**
-   * Track page view
-   */
-  pageView(page: PageView): void {
-    this.log('Page view', page);
-
-    if (!this.config.enabled) return;
-
-    this.sendToProviders('pageView', {
-      ...page,
-      timestamp: Date.now(),
-      sessionId: this.sessionId,
-    });
-  }
-
-  /**
-   * Track wallet connection
-   */
-  trackWalletConnect(address: string, chainId: number): void {
-    this.track({
-      category: 'wallet',
-      action: 'connect',
-      properties: { address: address.slice(0, 10), chainId },
-    });
-  }
-
-  /**
-   * Track wallet disconnection
-   */
-  trackWalletDisconnect(): void {
-    this.track({
-      category: 'wallet',
-      action: 'disconnect',
-    });
-  }
-
-  /**
-   * Track NFT mint
-   */
-  trackMint(tokenId: string, transactionHash: string): void {
-    this.track({
-      category: 'nft',
-      action: 'mint',
-      label: tokenId,
-      properties: { transactionHash },
-    });
-  }
-
-  /**
-   * Track transaction
-   */
-  trackTransaction(
-    type: 'mint' | 'transfer' | 'approve',
-    status: 'pending' | 'success' | 'failed',
-    hash?: string
+  trackEvent(
+    type: AnalyticsEventType,
+    properties: Record<string, unknown> = {},
+    walletAddress?: string
   ): void {
-    this.track({
-      category: 'transaction',
-      action: `${type}_${status}`,
-      properties: { hash },
-    });
-  }
+    if (!this.isEnabled) return;
 
-  /**
-   * Track error
-   */
-  trackError(error: Error, context?: string): void {
-    this.track({
-      category: 'error',
-      action: context || 'unknown',
-      label: error.message,
-      properties: {
-        stack: error.stack,
-        name: error.name,
-      },
-    });
-  }
-
-  /**
-   * Track feature usage
-   */
-  trackFeature(featureName: string, properties?: Record<string, unknown>): void {
-    this.track({
-      category: 'engagement',
-      action: 'feature_used',
-      label: featureName,
+    const event: AnalyticsEvent = {
+      id: `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      type,
+      timestamp: new Date(),
+      walletAddress,
       properties,
+      sessionId: this.getCurrentSessionId(),
+      platform: typeof window !== 'undefined' ? 'web' : 'server',
+      version: '1.0.0',
+    };
+
+    this.events.push(event);
+    this.updateSession();
+
+    // In production, send to analytics backend
+    this.sendToBackend(event);
+  }
+
+  trackPageView(path: string, title?: string): void {
+    this.trackEvent('page_view', { path, title });
+  }
+
+  trackWalletConnect(address: string, chainId: number): void {
+    this.trackEvent('wallet_connect', { chainId }, address);
+  }
+
+  trackWalletDisconnect(address: string): void {
+    this.trackEvent('wallet_disconnect', {}, address);
+  }
+
+  trackMintStarted(address: string, tokenId?: string, amount?: number): void {
+    this.trackEvent('nft_mint_started', { tokenId, amount }, address);
+  }
+
+  trackMintCompleted(
+    address: string,
+    tokenId: string,
+    transactionHash: string,
+    gasUsed?: bigint
+  ): void {
+    this.trackEvent('nft_mint_completed', {
+      tokenId,
+      transactionHash,
+      gasUsed: gasUsed?.toString(),
+    }, address);
+  }
+
+  trackMintFailed(address: string, error: string, tokenId?: string): void {
+    this.trackEvent('nft_mint_failed', { error, tokenId }, address);
+  }
+
+  trackAccessGranted(address: string, tierLevel: string, tokenCount: number): void {
+    this.trackEvent('access_granted', { tierLevel, tokenCount }, address);
+  }
+
+  trackAccessDenied(address: string, reason: string): void {
+    this.trackEvent('access_denied', { reason }, address);
+  }
+
+  trackError(error: Error, context?: Record<string, unknown>): void {
+    this.trackEvent('error', {
+      message: error.message,
+      stack: error.stack,
+      ...context,
     });
   }
 
-  private async sendToProviders(type: string, data: unknown): Promise<void> {
-    // Send to custom endpoint
-    if (this.config.providers.custom) {
-      try {
-        await fetch(this.config.providers.custom.endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type, data }),
-        });
-      } catch (error) {
-        this.log('Failed to send to custom provider', error);
-      }
+  async getEvents(filter: EventFilter = {}): Promise<AnalyticsEvent[]> {
+    let filtered = [...this.events];
+
+    if (filter.type) {
+      const types = Array.isArray(filter.type) ? filter.type : [filter.type];
+      filtered = filtered.filter(e => types.includes(e.type));
     }
-  }
 
-  private flushQueue(): void {
-    while (this.eventQueue.length > 0) {
-      const event = this.eventQueue.shift();
-      if (event) {
-        this.track(event);
-      }
+    if (filter.startDate) {
+      filtered = filtered.filter(e => e.timestamp >= filter.startDate!);
     }
+
+    if (filter.endDate) {
+      filtered = filtered.filter(e => e.timestamp <= filter.endDate!);
+    }
+
+    if (filter.walletAddress) {
+      filtered = filtered.filter(e => 
+        e.walletAddress?.toLowerCase() === filter.walletAddress!.toLowerCase()
+      );
+    }
+
+    filtered.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+
+    if (filter.limit) {
+      filtered = filtered.slice(0, filter.limit);
+    }
+
+    return filtered;
   }
 
-  /**
-   * Reset analytics state
-   */
-  reset(): void {
-    this.userId = null;
-    this.sessionId = this.generateSessionId();
-    this.eventQueue = [];
-    this.log('Analytics reset');
+  async getMetrics(period: 'day' | 'week' | 'month' = 'day'): Promise<AnalyticsMetrics> {
+    const now = new Date();
+    let startDate: Date;
+
+    switch (period) {
+      case 'day':
+        startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        break;
+      case 'week':
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case 'month':
+        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        break;
+    }
+
+    const periodEvents = this.events.filter(e => e.timestamp >= startDate);
+
+    const uniqueUsers = new Set(
+      periodEvents
+        .map(e => e.walletAddress)
+        .filter(Boolean)
+    );
+
+    const mintEvents = periodEvents.filter(e => e.type.startsWith('nft_mint'));
+    const completedMints = mintEvents.filter(e => e.type === 'nft_mint_completed').length;
+    const failedMints = mintEvents.filter(e => e.type === 'nft_mint_failed').length;
+
+    const accessGranted = periodEvents.filter(e => e.type === 'access_granted').length;
+    const accessDenied = periodEvents.filter(e => e.type === 'access_denied').length;
+
+    return {
+      totalUsers: uniqueUsers.size,
+      activeUsers24h: this.getActiveUsers24h(),
+      totalMints: completedMints + failedMints,
+      mintSuccessRate: completedMints + failedMints > 0
+        ? (completedMints / (completedMints + failedMints)) * 100
+        : 100,
+      accessGranted,
+      accessDenied,
+      averageSessionDuration: this.calculateAverageSessionDuration(),
+    };
   }
 
-  /**
-   * Enable/disable analytics
-   */
+  async getEventsByWallet(address: string): Promise<AnalyticsEvent[]> {
+    return this.getEvents({ walletAddress: address });
+  }
+
+  async getMintFunnel(): Promise<{
+    started: number;
+    completed: number;
+    failed: number;
+    conversionRate: number;
+  }> {
+    const started = this.events.filter(e => e.type === 'nft_mint_started').length;
+    const completed = this.events.filter(e => e.type === 'nft_mint_completed').length;
+    const failed = this.events.filter(e => e.type === 'nft_mint_failed').length;
+
+    return {
+      started,
+      completed,
+      failed,
+      conversionRate: started > 0 ? (completed / started) * 100 : 0,
+    };
+  }
+
+  async getPopularPages(limit: number = 10): Promise<{ path: string; views: number }[]> {
+    const pageViews = this.events.filter(e => e.type === 'page_view');
+    const counts = new Map<string, number>();
+
+    for (const event of pageViews) {
+      const path = event.properties.path as string;
+      counts.set(path, (counts.get(path) || 0) + 1);
+    }
+
+    return Array.from(counts.entries())
+      .map(([path, views]) => ({ path, views }))
+      .sort((a, b) => b.views - a.views)
+      .slice(0, limit);
+  }
+
   setEnabled(enabled: boolean): void {
-    this.config.enabled = enabled;
-    this.log(`Analytics ${enabled ? 'enabled' : 'disabled'}`);
+    this.isEnabled = enabled;
+  }
+
+  clearEvents(): void {
+    this.events = [];
+    this.sessions.clear();
+  }
+
+  private getCurrentSessionId(): string {
+    if (typeof window === 'undefined') return 'server';
+    
+    let sessionId = sessionStorage.getItem('analytics_session_id');
+    if (!sessionId) {
+      sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      sessionStorage.setItem('analytics_session_id', sessionId);
+      this.sessions.set(sessionId, {
+        startTime: new Date(),
+        lastActivity: new Date(),
+      });
+    }
+    return sessionId;
+  }
+
+  private updateSession(): void {
+    const sessionId = this.getCurrentSessionId();
+    const session = this.sessions.get(sessionId);
+    if (session) {
+      session.lastActivity = new Date();
+    }
+  }
+
+  private getActiveUsers24h(): number {
+    const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const activeWallets = new Set(
+      this.events
+        .filter(e => e.timestamp >= cutoff && e.walletAddress)
+        .map(e => e.walletAddress)
+    );
+    return activeWallets.size;
+  }
+
+  private calculateAverageSessionDuration(): number {
+    const durations: number[] = [];
+    
+    for (const session of this.sessions.values()) {
+      const duration = session.lastActivity.getTime() - session.startTime.getTime();
+      durations.push(duration);
+    }
+
+    if (durations.length === 0) return 0;
+    return durations.reduce((a, b) => a + b, 0) / durations.length / 1000; // seconds
+  }
+
+  private async sendToBackend(event: AnalyticsEvent): Promise<void> {
+    // In production, send to analytics service
+    // console.log('Analytics event:', event);
   }
 }
 
-// Export singleton instance
 export const analyticsService = new AnalyticsService();
-
-// Export class for custom instances
-export { AnalyticsService };
-
 export default analyticsService;
-
