@@ -126,6 +126,160 @@ export function isZeroAddress(address: string | undefined | null): boolean {
   return address.toLowerCase() === ZERO_ADDRESS.toLowerCase();
 }
 
+/**
+ * Dead address constant (commonly used for burns)
+ */
+export const DEAD_ADDRESS = '0x000000000000000000000000000000000000dEaD' as const;
+
+/**
+ * Checks if address is dead address
+ */
+export function isDeadAddress(address: string | undefined | null): boolean {
+  if (!address) return false;
+  return address.toLowerCase() === DEAD_ADDRESS.toLowerCase();
+}
+
+/**
+ * Checks if address is a burn address (zero or dead)
+ */
+export function isBurnAddress(address: string | undefined | null): boolean {
+  return isZeroAddress(address) || isDeadAddress(address);
+}
+
+/**
+ * Convert address to bytes20
+ */
+export function addressToBytes(address: string): Uint8Array {
+  if (!isValidAddress(address)) {
+    throw new Error('Invalid address');
+  }
+  const hex = address.slice(2);
+  const bytes = new Uint8Array(20);
+  for (let i = 0; i < 20; i++) {
+    bytes[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+  }
+  return bytes;
+}
+
+/**
+ * Convert bytes20 to address
+ */
+export function bytesToAddress(bytes: Uint8Array): `0x${string}` {
+  if (bytes.length !== 20) {
+    throw new Error('Bytes must be exactly 20 bytes');
+  }
+  const hex = Array.from(bytes)
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+  return `0x${hex}` as `0x${string}`;
+}
+
+/**
+ * Pad address to 32 bytes (for ABI encoding)
+ */
+export function padAddress(address: string): `0x${string}` {
+  if (!isValidAddress(address)) {
+    throw new Error('Invalid address');
+  }
+  const clean = address.slice(2).toLowerCase();
+  return `0x${clean.padStart(64, '0')}` as `0x${string}`;
+}
+
+/**
+ * Extract address from 32-byte padded hex
+ */
+export function unpadAddress(paddedAddress: string): `0x${string}` {
+  const clean = paddedAddress.startsWith('0x') 
+    ? paddedAddress.slice(2) 
+    : paddedAddress;
+  
+  if (clean.length !== 64) {
+    throw new Error('Padded address must be 64 characters');
+  }
+  
+  return `0x${clean.slice(-40)}` as `0x${string}`;
+}
+
+/**
+ * Get address from various formats
+ */
+export function normalizeAddress(address: string | undefined | null): `0x${string}` | null {
+  if (!address) return null;
+  
+  // Already valid address
+  if (isValidAddress(address)) {
+    return toChecksumAddress(address);
+  }
+  
+  // Try to extract from padded format
+  if (address.length === 66 || address.length === 64) {
+    try {
+      const extracted = unpadAddress(address);
+      if (isValidAddress(extracted)) {
+        return toChecksumAddress(extracted);
+      }
+    } catch {
+      // Not a valid padded address
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Generate deterministic gradient for address
+ */
+export function addressToGradient(address: string): string {
+  if (!address || address.length < 10) {
+    return 'linear-gradient(135deg, #6366f1, #8b5cf6)';
+  }
+  
+  const hash1 = parseInt(address.slice(2, 8), 16);
+  const hash2 = parseInt(address.slice(8, 14), 16);
+  
+  const hue1 = hash1 % 360;
+  const hue2 = (hash2 % 360);
+  
+  return `linear-gradient(135deg, hsl(${hue1}, 65%, 55%), hsl(${hue2}, 65%, 55%))`;
+}
+
+/**
+ * Create address mapping key (for case-insensitive maps)
+ */
+export function createAddressKey(address: string): string {
+  return address.toLowerCase();
+}
+
+/**
+ * Check if addresses array contains address
+ */
+export function includesAddress(addresses: string[], address: string): boolean {
+  const normalizedAddress = address.toLowerCase();
+  return addresses.some(a => a.toLowerCase() === normalizedAddress);
+}
+
+/**
+ * Remove duplicates from address array
+ */
+export function uniqueAddresses(addresses: string[]): string[] {
+  const seen = new Set<string>();
+  return addresses.filter(address => {
+    const key = address.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+/**
+ * Sort addresses alphabetically
+ */
+export function sortAddresses(addresses: string[]): string[] {
+  return [...addresses].sort((a, b) => 
+    a.toLowerCase().localeCompare(b.toLowerCase())
+  );
+}
+
 export default {
   isValidAddress,
   toChecksumAddress,
@@ -137,8 +291,21 @@ export default {
   getAddressSeed,
   isContractAddress,
   addressToColor,
+  addressToGradient,
   maskAddress,
   isZeroAddress,
+  isDeadAddress,
+  isBurnAddress,
+  addressToBytes,
+  bytesToAddress,
+  padAddress,
+  unpadAddress,
+  normalizeAddress,
+  createAddressKey,
+  includesAddress,
+  uniqueAddresses,
+  sortAddresses,
   ZERO_ADDRESS,
+  DEAD_ADDRESS,
 };
 
