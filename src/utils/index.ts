@@ -159,3 +159,17 @@ export {
   createSubscription,
 } from './event.utils';
 
+// Performance utilities
+export * from './performance.utils';
+export {
+  deduplicateRequest,
+  clearRequestCache,
+  createBatcher,
+  LRUCache,
+  measureAsync,
+  measureSync,
+  createPrefetcher,
+  requestIdleCallbackPolyfill,
+  cancelIdleCallbackPolyfill,
+} from './performance.utils';
+

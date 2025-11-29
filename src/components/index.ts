@@ -23,6 +23,24 @@ export { WalletConnectButton } from './wallet/WalletConnectButton';
 export { WalletStatus } from './wallet/WalletStatus';
 export { WalletAvatar } from './wallet/WalletAvatar';
 
+// Performance components
+export { LazyImage } from './LazyImage';
+export type { LazyImageProps } from './LazyImage';
+
+export { VirtualList, VirtualGrid } from './VirtualList';
+export type { VirtualListProps, VirtualGridProps } from './VirtualList';
+
+export {
+  Skeleton,
+  NFTCardSkeleton,
+  WalletCardSkeleton,
+  TransactionRowSkeleton,
+  AccessCardSkeleton,
+  SkeletonList,
+  SkeletonGrid,
+} from './SkeletonLoader';
+export type { SkeletonProps, SkeletonListProps, SkeletonGridProps } from './SkeletonLoader';
+
 // UI components
 export * from './ui';
 

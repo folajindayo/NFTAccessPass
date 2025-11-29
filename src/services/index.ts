@@ -79,3 +79,6 @@ export {
 } from './wallet.service';
 export type { WalletInfo, WalletBalance, ConnectionStatus, ChainConfig as WalletChainConfig } from './wallet.service';
 
+export { swrCache, createSWRCache } from './swr.service';
+export type { SWRCacheEntry, SWROptions } from './swr.service';
+

@@ -33,6 +33,38 @@ export { useWalletBalance } from './useWalletBalance';
 export { useWalletConnection } from './useWalletConnection';
 export { useWalletEvents } from './useWalletEvents';
 
+// Performance hooks
+export {
+  useMemoizedCallback,
+  useDeepMemo,
+  useStableCallback,
+  useEventCallback,
+  useShallowMemo,
+  useDebouncedCallback as useMemoizedDebouncedCallback,
+  useThrottledCallback,
+} from './useMemoizedCallback';
+
+export {
+  usePrefetch,
+  usePrefetchOnHover,
+  usePrefetchOnFocus,
+  clearAllPrefetchCache,
+  getPrefetchCacheStats,
+} from './usePrefetch';
+export type { PrefetchOptions, PrefetchResult } from './usePrefetch';
+
+export {
+  useRenderCount,
+  useWhyDidYouUpdate,
+  useUpdateEffect,
+  useDeferredState,
+  useBatchedState,
+  useStableState,
+  useForceUpdate,
+  useAsyncMemo,
+  useSelector,
+} from './useOptimizedRender';
+
 // Re-export types from hooks
 export type { UseAsyncReturn, UseAsyncOptions } from './useAsync';
 export type { UseClipboardReturn } from './useClipboard';
